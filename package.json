@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "build": "nuxt build",
-    "dev": "nuxt dev",
+    "dev": "nuxt dev --dotenv .env.local",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
@@ -19,5 +19,5 @@
     "@mdi/font": "^7.2.96",
     "@pinia/nuxt": "^0.4.9"
   },
-  "version": "0.0.1"
+  "version": "0.0.2"
 }
