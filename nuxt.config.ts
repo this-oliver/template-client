@@ -12,7 +12,10 @@ export default defineNuxtConfig({
   /**
    * NOTE: `runtimeConfig.public.restApi` is available in the client
    * and server side while `runtimeConfig.secret` is only available
-   * in the server side.
+   * in the server side. You can access these values in your code
+   * using the `const config = useRuntimeConfig()` composable.
+   * 
+   * See: https://nuxt.com/docs/guide/going-further/runtime-config
    */
   runtimeConfig: {
     secret: '',

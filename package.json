@@ -9,15 +9,17 @@
     "postinstall": "nuxt prepare",
     "bump": "npx fist-bump"
   },
+  "dependencies": {
+    "@mdi/font": "^7.2.96",
+    "@pinia/nuxt": "^0.4.9",
+    "pinia": "^2.1.6",
+    "vue-sonner": "^0.4.4"
+  },
   "devDependencies": {
     "@invictus.codes/nuxt-vuetify": "^0.2.20",
     "@types/node": "^18",
     "fist-bump": "^1.2.4",
     "nuxt": "^3.4.3"
   },
-  "dependencies": {
-    "@mdi/font": "^7.2.96",
-    "@pinia/nuxt": "^0.4.9"
-  },
-  "version": "0.0.5"
+  "version": "0.0.6"
 }
