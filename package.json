@@ -11,15 +11,13 @@
   },
   "dependencies": {
     "@mdi/font": "^7.2.96",
-    "@pinia/nuxt": "^0.4.9",
-    "pinia": "^2.1.6",
-    "vue-sonner": "^0.4.4"
+    "@pinia/nuxt": "^0.5.1"
   },
   "devDependencies": {
     "@invictus.codes/nuxt-vuetify": "^0.2.20",
     "@types/node": "^18",
     "fist-bump": "^1.2.4",
-    "nuxt": "^3.4.3"
+    "nuxt": "^3.7.4"
   },
-  "version": "0.0.6"
+  "version": "0.0.7"
 }
