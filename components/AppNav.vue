@@ -3,6 +3,7 @@ import { useNavigationStore } from '~/stores/navigation-store';
 import { useSidebarStore } from '~/stores/sidebar-store';
 import { computed } from 'vue';
 import { useDisplay } from 'vuetify';
+import ThemeBtn from '~/components/btns/ThemeBtn.vue';
 
 const drawer = useSidebarStore();
 const navigation = useNavigationStore();

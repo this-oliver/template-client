@@ -4,8 +4,6 @@ import { useSidebarStore } from '~/stores/sidebar-store';
 const sidebarStore = useSidebarStore();
 const runtimeConfig = useRuntimeConfig()
 
-console.log(runtimeConfig)
-
 </script>
 
 <template>
