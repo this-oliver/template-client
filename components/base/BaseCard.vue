@@ -116,6 +116,7 @@ const getActions: ComputedRef<ActionItem[]> = computed(() => {
             :hint="item.hint"
             :outlined="item.outlined"
             :loading="props.loading"
+            :disabled="item.disabled"
             @click="item.action" >
             {{ item.label }}
           </base-btn >
