@@ -1,67 +1,62 @@
-import { defineComponent, h, shallowRef } from 'vue'
-import InfoCardVue from '~/components/cards/InfoCard.vue'
-import type { DefineComponent } from 'vue'
+import type { DefineComponent } from 'vue';
+import { defineComponent, h, shallowRef } from 'vue';
+import InfoCardVue from '~/components/cards/InfoCard.vue';
 
-export function useNotification() {
-  type NotificationType = 'general' | 'warning' | 'error' | 'success'
+export function useNotification () {
+  const { $toast } = useNuxtApp()
   
-  interface Notification {
-    type: NotificationType
-    title: string
-    message: string
-    component: DefineComponent
-  }
+  type NotificationType = 'general' | 'warning' | 'error' | 'success'
 
-  function _trigger(notification: Notification) {
-    /**
-     * `vue-sonner` is acting weird with NUXT, so this is a
-     * temporary stump.
-     */
-    const notificationRef = shallowRef(notification);
-    console.log(notificationRef.value);
-  }
+	interface Notification {
+		type: NotificationType
+		title: string
+		message: string
+		component: DefineComponent
+	}
 
-  function _mapTypeToColor(type: NotificationType): string {
-    switch (type) {
-    case 'general':
-      return 'info';
-    case 'warning':
-      return 'warning';
-    case 'error':
-      return 'error';
-    case 'success':
-      return 'success';
-    default:
-      return 'primary';
-    }
-  }
+	function _trigger (notification: Notification) {
+    $toast(shallowRef(notification.component));
+	}
 
-  function _renderNotifictaion(title: string, message: string, type: NotificationType): Notification {
-    const component: DefineComponent = defineComponent({
-      setup() {
-        return () => h(InfoCardVue, {
-          message: `<b>${title}</b> <p>${message}</p>`,
-          color: _mapTypeToColor(type),
-          htmlIsh: true,
-          style: 'width: 350px;'
-        });
-      }
-    });
-    
-    return {
-      type,
-      title,
-      message,
-      component
-    }
-  }
+	function _mapTypeToColor (type: NotificationType): string {
+		switch (type) {
+		case 'general':
+			return 'info';
+		case 'warning':
+			return 'warning';
+		case 'error':
+			return 'error';
+		case 'success':
+			return 'success';
+		default:
+			return 'primary';
+		}
+	}
 
-  function notify(title: string, message: string, type: NotificationType = 'general') {
+	function _renderNotifictaion (title: string, message: string, type: NotificationType): Notification {
+		const component: DefineComponent = defineComponent({
+			setup () {
+				return () => h(InfoCardVue, {
+					message: `<b>${title}</b> <p>${message}</p>`,
+					color: _mapTypeToColor(type),
+					htmlIsh: true,
+					style: 'width: 350px;'
+				});
+			}
+		});
+
+		return {
+			type,
+			title,
+			message,
+			component
+		};
+	}
+
+	function notify (title: string, message: string, type: NotificationType = 'general') {
     const notification: Notification = _renderNotifictaion(title, message, type);
-    _trigger(notification)
-  }
+		_trigger(notification);
+	}
 
-  return {
-    notify
-  }
+	return { notify };
 }
