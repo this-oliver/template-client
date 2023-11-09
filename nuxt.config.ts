@@ -1,27 +1,36 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+	
+  /**
+   * Use styling globally in app
+   */
   css: [
-    '~/assets/styles/fonts.css'
-  ],
+		'~/assets/styles/fonts.css'
+	],
 
-  modules: [
-    '@pinia/nuxt',
-    '@invictus.codes/nuxt-vuetify'
-  ],
+	/**
+   * Use components in this array globaly without having to import
+   * the explicitly
+   */
+	components: [
+		'~/components',
+		{ path: '~/components/base' },
+		{ path: '~/components/cards' },
+		{ path: '~/components/forms' }
+	],
 
   /**
+   * Adds modules to app
+   */
+	modules: [
+		'@invictus.codes/nuxt-vuetify',
+		'@pinia/nuxt'
+	],
+
+	/**
    * NOTE: `runtimeConfig.public.restApi` is available in the client
    * and server side while `runtimeConfig.secret` is only available
-   * in the server side. You can access these values in your code
-   * using the `const config = useRuntimeConfig()` composable.
-   * 
-   * See: https://nuxt.com/docs/guide/going-further/runtime-config
+   * in the server side.
    */
-  runtimeConfig: {
-    secret: '',
-
-    public: {
-      restApi: ''
-    }
-  }
-})
+	runtimeConfig: { public: { restApi: '' } }
+});

@@ -1,4 +1,9 @@
-const BASE_URL = import.meta.env.VITE_SERVER_URL;
+interface FetchConfig extends RequestInit {
+  /**
+   * If true, the request does not use the base url
+   */
+  external?: boolean;
+}
 
 interface FetchError {
   status: number;
@@ -7,42 +12,52 @@ interface FetchError {
 }
 
 export function useRequest() {
-  function handleError(error: any){
-    const errObj: FetchError = {
-      status: error.status,
-      statusText: error.statusText,
-      content: undefined
+  const runtimeConfig = useRuntimeConfig();
+  const BASE_URL = runtimeConfig.public.restApi;
+
+  /**
+   * wrapper for fetch API with base url and default headers
+   */
+  async function request(url: string, options?: FetchConfig) {
+
+    const defaultOptions: RequestInit = {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' }
     };
 
-    if (error.status >= 400 && error.status < 500) {
-      errObj.content = error.json();
-    } else {
-      errObj.content = error;
-    }
-
-    return errObj;
-  };
-  
-  /**
- * wrapper for fetch API with base url and default headers
- */
-  async function request(url: string, options?: RequestInit) {
-  
     const config: RequestInit = {
+      ...defaultOptions,
       ...options,
-      method: options?.method || 'GET' // default method is GET
-    }
+      headers: {
+        ...defaultOptions.headers,
+        ...options?.headers // merge headers with default and options headers
+      }
+    };
 
     try {
-      const res = await fetch(`${BASE_URL}${url}`, { ...config });
+      const path: string = options?.external ? url : `${BASE_URL}${url}`;
+      const res = await fetch(path, { ...config });
 
       if (!res.ok) {
         throw res;
       }
 
       return res.json();
-    } catch (error) {
-      throw handleError(error);
+    } catch (err: any) {
+
+      const error: FetchError = {
+        status: err.status,
+        statusText: err.statusText,
+        content: undefined
+      };
+
+      if (error.status >= 400 && error.status < 500) {
+        error.content = err.json();
+      } else {
+        error.content = err;
+      }
+
+      throw error;
     }
   }
 
