@@ -1,12 +1,14 @@
 {
   "name": "template-nuxt",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev --dotenv .env.local",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
+    "docker:build": "docker build -t template-nuxt .",
+    "docker:run": "docker run -p 3000:3000 --env-file .env template-nuxt",
     "bump": "npx fist-bump"
   },
   "dependencies": {

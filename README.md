@@ -4,11 +4,10 @@
 
 ## Features
 
-### Basics
-
 - [x] Base Components (buttons, inputs, etc.)
 - [x] State Management with `Pinia`
 - [x] Responsive UI Framework with `Vuetify`
+- [x] Multi-language support with `vue-i18n`
 
 ### `I18n` - Support Multiple Languages
 
@@ -34,3 +33,21 @@ Dependancies:
 - `@tiptap/starter-kit` - basic editor styling
 - `@tiptap/extension-placeholder` - placeholder for empty editor
 - `sass` for editor styling
+
+## Deployment
+
+### Docker
+
+Building the image:
+
+```bash
+# `pnpm docker:build` performs the same command
+docker build -t nuxt-template .
+```
+
+Running the image:
+
+```bash
+# `pnpm docker:run` performs the same command
+docker run -p 3000:3000 --env-file .env nuxt-template
+```
