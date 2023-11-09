@@ -36,5 +36,5 @@ export default defineNuxtConfig({
    * and server side while `runtimeConfig.secret` is only available
    * in the server side.
    */
-	runtimeConfig: { public: { restApi: '' } }
+	runtimeConfig: { public: { apiUrl: '' } }
 });
