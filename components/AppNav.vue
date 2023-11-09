@@ -3,7 +3,6 @@ import { useNavigationStore } from '~/stores/navigation-store';
 import { useSidebarStore } from '~/stores/sidebar-store';
 import { computed } from 'vue';
 import { useDisplay } from 'vuetify';
-import ThemeBtn from '~/components/btns/ThemeBtn.vue';
 
 const drawer = useSidebarStore();
 const navigation = useNavigationStore();
@@ -19,8 +18,9 @@ const isSmallScreen = computed(() => {
 <template>
   <v-app-bar
   id="app-nav"
-    app
-    flat>
+  app
+  flat
+  color="transparent">
     <v-app-bar-nav-icon
       v-if="isSmallScreen"
       @click="drawer.toggle" />
@@ -37,14 +37,13 @@ const isSmallScreen = computed(() => {
       <base-btn
         v-for="option in navigation.options"
         :key="option.label"
-        plain
-        :to="option.to"
         class="mx-1"
+        plain
+        :color="option.color"
+        :to="option.to"
         @click="option.action">
         {{ option.label }}
       </base-btn>
-
-      <theme-btn class="mx-1" />
     </div>
   </v-app-bar>
 </template>
