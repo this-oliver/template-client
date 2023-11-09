@@ -1,6 +1,6 @@
 {
   "name": "template-nuxt",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev --dotenv .env.local",
@@ -12,7 +12,12 @@
   "dependencies": {
     "@mdi/font": "^7.2.96",
     "@pinia/nuxt": "^0.5.1",
+    "@tiptap/extension-placeholder": "^2.1.12",
+    "@tiptap/pm": "^2.1.12",
+    "@tiptap/starter-kit": "^2.1.12",
+    "@tiptap/vue-3": "^2.1.12",
     "dayjs": "^1.11.10",
+    "sass": "^1.69.5",
     "vue-sonner": "^1.0.2"
   },
   "devDependencies": {

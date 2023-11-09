@@ -22,3 +22,15 @@ Dependancies:
 
 - [@nuxt/i18n](https://i18n.nuxtjs.org/)
 - `@intlify/unplugin-vue-i18n/vite` (optimizes purposes as explained in this [guide](https://vue-i18n.intlify.dev/guide/integrations/nuxt3.html#optimize-with-intlify-unplugin-vue-i18n) )
+
+### User Friendly Editor
+
+Provide non-technical users with an alternative to markdown syntax with [tiptap](https://www.tiptap.dev/).
+
+Dependancies:
+
+- `@tiptap/vue-3` - core library
+- `@tiptap/pm` - prosemirror for tiptap
+- `@tiptap/starter-kit` - basic editor styling
+- `@tiptap/extension-placeholder` - placeholder for empty editor
+- `sass` for editor styling
