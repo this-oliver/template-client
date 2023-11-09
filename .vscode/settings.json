@@ -19,5 +19,7 @@
 		"titleBar.inactiveBackground": "#67134999",
 		"titleBar.inactiveForeground": "#e7e7e799"
 	},
-	"peacock.color": "#671349"
+	"peacock.color": "#671349",
+	"i18n-ally.localesPaths": ["locales"],
+	"i18n-ally.keystyle": "nested"
 }

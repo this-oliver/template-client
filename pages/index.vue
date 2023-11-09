@@ -24,6 +24,11 @@ const features: ActionItem[] = [
     to: '/form',
   },
   {
+    label: 'Localization',
+    description: 'Support mutliple languages',
+    to: '/localize'
+  },
+  {
     label: 'Notifications',
     description: 'Trigger notifications',
     action: () => notify('Hello', 'This is a notification')
