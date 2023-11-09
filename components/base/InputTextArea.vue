@@ -21,6 +21,10 @@ const props = defineProps({
   isValid: {
     type: Boolean || null,
     default: null
+  },
+  color: {
+    type: String,
+    default: undefined
   }
 });
 
@@ -50,6 +54,7 @@ watch(() => props.value, (newValue) => {
   <v-textarea
     v-model="data.input"
     :label="label"
+    :color="color"
     :placeholder="placeHolder"
     :outlined="outlined"
     :success="isValid === true"
