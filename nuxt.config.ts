@@ -13,8 +13,9 @@ export default defineNuxtConfig({
    * the explicitly
    */
 	components: [
-		'~/components',
+		{ path: '~/components/app' },
 		{ path: '~/components/base' },
+		{ path: '~/components/buttons' },
 		{ path: '~/components/cards' },
 		{ path: '~/components/forms' }
 	],

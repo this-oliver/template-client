@@ -23,9 +23,7 @@ function toggleTheme() {
 </script>
 
 <template>
-  <v-list-item
-    v-if="props.listMode"
-    @click="toggleTheme">
+  <v-list-item v-if="props.listMode" @click="toggleTheme">
     <v-list-item-title>
       Theme
     </v-list-item-title>
@@ -35,11 +33,7 @@ function toggleTheme() {
     </template>
   </v-list-item>
 
-  <base-btn
-    v-else
-    plain
-    @click="toggleTheme"
-    class="mx-1">
+  <base-btn v-else plain @click="toggleTheme" class="mx-1">
     <v-icon :icon="icon"></v-icon>
   </base-btn>
 </template>
