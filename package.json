@@ -11,7 +11,8 @@
   },
   "dependencies": {
     "@mdi/font": "^7.2.96",
-    "@pinia/nuxt": "^0.5.1"
+    "@pinia/nuxt": "^0.5.1",
+    "dayjs": "^1.11.10"
   },
   "devDependencies": {
     "@invictus.codes/nuxt-vuetify": "^0.2.20",
@@ -19,5 +20,5 @@
     "fist-bump": "^2.3.2",
     "nuxt": "^3.7.4"
   },
-  "version": "0.0.10"
+  "version": "0.1.0"
 }
