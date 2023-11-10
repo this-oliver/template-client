@@ -45,6 +45,7 @@ export default defineNuxtConfig({
    * in the server side.
    */
 	runtimeConfig: {
+    secret: ''
     public: { apiUrl: '' }
   },
 
