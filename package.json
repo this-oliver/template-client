@@ -1,6 +1,6 @@
 {
   "name": "template-nuxt",
-  "version": "0.9.9",
+  "version": "0.9.10",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev --dotenv .env.local",
