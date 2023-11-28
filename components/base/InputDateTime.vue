@@ -2,82 +2,113 @@
 import DayJs from 'dayjs';
 
 const props = defineProps({
-  /**
-   * Timestamp
-   */
-  value: {
-    type: Number,
-    default: undefined
-  },
-  label: {
-    type: String,
-    default: ''
-  },
-  labelDate: {
-    type: String,
-    default: 'Date'
-  },
-  labelTime: {
-    type: String,
-    default: 'Time'
-  },
-  hideDate: {
-    type: Boolean,
-    default: false
-  },
-  hideTime: {
-    type: Boolean,
-    default: false
-  },
-  color: {
-    type: String,
-    default: 'transparent'
-  }
+	modelValue: {
+		type: [Number, String],
+		default: undefined
+	},
+	label: {
+		type: String,
+		default: ''
+	},
+	labelDate: {
+		type: String,
+		default: 'Date'
+	},
+	labelTime: {
+		type: String,
+		default: 'Time'
+	},
+	hideDate: {
+		type: Boolean,
+		default: false
+	},
+	hideTime: {
+		type: Boolean,
+		default: false
+	},
+	color: {
+		type: String,
+		default: 'transparent'
+	}
 });
 
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:model-value']);
 
 const form = reactive({
-  date: '',
-  time: ''
+	date: props.modelValue ? convertToDateTime(props.modelValue).date : '',
+	time: props.modelValue ? convertToDateTime(props.modelValue).time : ''
 });
 
-const dateTime = computed<number>(() => {
-  const [year, month, day] = form.date.split('-');
-  const [hour, minute] = form.time.split(':');
+const validDate = computed<boolean>(() => {
+	return props.hideDate ? true : DayJs(form.date).isValid();
+});
 
-  const date = (!year || !month || !day)
-    ? DayJs()
-    : DayJs().year(Number(year)).month(Number(month)).day(Number(day));
-
-  return date.hour(Number(hour)).minute(Number(minute)).unix();
+const validTime = computed<boolean>(() => {
+	const [hour, minute] = form.time.split(':');
+	return props.hideTime
+		? true
+		: DayJs(validDate.value ? form.date : undefined)
+			.hour(Number(hour))
+			.minute(Number(minute))
+			.isValid();
 });
 
 const validForm = computed<boolean>(() => {
-  const validDate = props.hideDate ? true : DayJs(form.date).isValid();
-
-  if (form.time.length !== 5) { return false; }
-  const [hour, minute] = form.time.split(':');
-  const validTime = props.hideTime ? true : DayJs().hour(Number(hour)).minute(Number(minute)).isValid();
-
-  return validDate && validTime;
+	return validDate.value && validTime.value;
 });
 
-watch(() => validForm.value, (valid) => {
-  if (valid) {
-    emit('update:modelValue', dateTime.value);
-  }
-});
+function convertToUnix (dateTime: { date: string; time: string }): number {
+	const [hour, minute] = dateTime.time.split(':');
+	return DayJs(dateTime.date).hour(Number(hour)).minute(Number(minute)).unix();
+}
+
+function convertToDateTime (unix: number | string): {
+	date: string;
+	time: string;
+} {
+	if (typeof unix === 'string') {
+		unix = Number(unix);
+	}
+
+	const date = DayJs.unix(unix);
+	return {
+		date: date.format('YYYY-MM-DD'),
+		time: date.format('HH:mm')
+	};
+}
+
+watch(
+	() => form,
+	() => {
+		if (validForm.value) {
+			const unix: number = convertToUnix(form);
+			emit('update:model-value', unix);
+		}
+	},
+	{ deep: true }
+);
 </script>
 
 <template>
-  <v-row justify="center" no-gutters>
-    <v-col v-if="!props.hideTime" :cols="props.hideDate ? 12 : 6">
-      <InputText v-model="form.time" type="time" :label="props.labelTime" />
+  <v-row
+    justify="center"
+    no-gutters>
+    <v-col
+      v-if="!props.hideTime"
+      :cols="props.hideDate ? 12 : 6">
+      <InputText
+        v-model="form.time"
+        type="time"
+        :label="props.labelTime" />
     </v-col>
 
-    <v-col v-if="!props.hideDate" :cols="props.hideTime ? 12 : 6">
-      <InputText v-model="form.date" type="date" :label="props.labelDate" />
+    <v-col
+      v-if="!props.hideDate"
+      :cols="props.hideTime ? 12 : 6">
+      <InputText
+        v-model="form.date"
+        type="date"
+        :label="props.labelDate" />
     </v-col>
   </v-row>
 </template>
