@@ -13,7 +13,7 @@ interface FetchError {
 
 export function useRequest() {
   const runtimeConfig = useRuntimeConfig();
-  const BASE_URL = runtimeConfig.public.restApi;
+	const BASE_URL = runtimeConfig.public.baseUrl;
 
   /**
    * wrapper for fetch API with base url and default headers
