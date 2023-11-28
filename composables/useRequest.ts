@@ -1,63 +1,69 @@
 interface FetchConfig extends RequestInit {
-  /**
-   * If true, the request does not use the base url
-   */
-  external?: boolean;
+  method?: 'POST' | 'GET' | 'PATCH' | 'DELETE';
+  contentType?: string | null;
+  authorization?: string;
 }
 
-interface FetchError {
+export interface FetchError {
   status: number;
   statusText: string;
   content: any;
 }
 
+/**
+ * returns true if a string is a url with or without protocol
+ */
+function _isValidUrl(str: string): boolean {
+  const pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
+    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|' + // domain name
+    '((\\d{1,3}\\.){3}\\d{1,3}))' + // ip (v4) address
+    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port
+    '(\\?[;&amp;a-z\\d%_.~+=-]*)?' + // query string
+    '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
+
+  return !!pattern.test(str);
+}
+
 export function useRequest() {
   const runtimeConfig = useRuntimeConfig();
-	const BASE_URL = runtimeConfig.public.baseUrl;
+  const BASE_URL = runtimeConfig.public.baseUrl;
+
+  const DEFAULT_METHOD = 'GET';
+  const DEFAULT_CONTENT_TYPE = 'application/json';
 
   /**
    * wrapper for fetch API with base url and default headers
    */
   async function request(url: string, options?: FetchConfig) {
-
-    const defaultOptions: RequestInit = {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' }
-    };
-
-    const config: RequestInit = {
-      ...defaultOptions,
-      ...options,
-      headers: {
-        ...defaultOptions.headers,
-        ...options?.headers // merge headers with default and options headers
-      }
-    };
+    const path = _isValidUrl(url) ? url : `${BASE_URL}${url}`;
 
     try {
-      const path: string = options?.external ? url : `${BASE_URL}${url}`;
-      const res = await fetch(path, { ...config });
+      const config: RequestInit = {
+        method: options?.method || DEFAULT_METHOD,
+        headers: {
+          'Content-Type': options?.contentType || DEFAULT_CONTENT_TYPE,
+          Authorization: options?.authorization ? `Bearer ${options.authorization}` : ''
+        },
+        body: options?.body
+      };
+
+      if (options?.contentType === null) {
+        delete config.headers!['Content-Type' as keyof HeadersInit];
+      }
+
+      const res = await fetch(path, config);
 
       if (!res.ok) {
         throw res;
       }
 
       return res.json();
-    } catch (err: any) {
-
-      const error: FetchError = {
-        status: err.status,
-        statusText: err.statusText,
+    } catch (error) {
+      throw {
+        status: (error as any).status,
+        statusText: (error as any).statusText,
         content: undefined
-      };
-
-      if (error.status >= 400 && error.status < 500) {
-        error.content = err.json();
-      } else {
-        error.content = err;
-      }
-
-      throw error;
+      } as FetchError;
     }
   }
 
