@@ -1,28 +1,23 @@
 <script setup lang="ts">
+import { useDisplay } from 'vuetify';
 import { useNavigationStore } from '~/stores/navigation-store';
 import { useSidebarStore } from '~/stores/sidebar-store';
-import { computed } from 'vue';
-import { useDisplay } from 'vuetify';
+import { useAuthStore } from '~/stores/auth-store';
 
+const { smAndDown } = useDisplay();
+const auth = useAuthStore();
 const drawer = useSidebarStore();
 const navigation = useNavigationStore();
-
-const { name } = useDisplay();
-
-const isSmallScreen = computed(() => {
-  return name.value === 'xs' || name.value === 'sm';
-});
-
 </script>
 
 <template>
   <v-app-bar
-  id="app-nav"
-  app
-  flat
-  color="transparent">
+    id="app-nav"
+    app
+    flat
+    color="transparent">
     <v-app-bar-nav-icon
-      v-if="isSmallScreen"
+      v-if="smAndDown"
       @click="drawer.toggle" />
 
     <router-link
@@ -33,25 +28,27 @@ const isSmallScreen = computed(() => {
 
     <v-spacer />
 
-    <div v-if="!isSmallScreen" >
+    <div v-if="!smAndDown">
       <base-btn
         v-for="option in navigation.options"
         :key="option.label"
-        class="mx-1"
+        class="mx-1 plain"
         plain
         :color="option.color"
         :to="option.to"
         @click="option.action">
         {{ option.label }}
       </base-btn>
+
+      <app-admin-menu v-if="auth.isAuthenticated" />
     </div>
   </v-app-bar>
 </template>
 
 <style scoped>
 @media (min-width: 600px) {
-  #app-nav {
-    padding: 0 2rem;
-  }
+	#app-nav {
+		padding: 0 2rem;
+	}
 }
 </style>

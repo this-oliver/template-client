@@ -114,6 +114,25 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   /**
+   * Updates user.
+   */
+	async function updateUser (id: string, patchedUser: Partial<User>): Promise<User> {
+		const updatedUser = await request(`/users/${id}`, {
+			method: 'PATCH',
+			body: JSON.stringify(patchedUser),
+			authorization: accessToken.value
+		});
+
+		if (!updatedUser) {
+			throw new Error('Invalid user.');
+		}
+
+		_setUser(updatedUser);
+
+		return user.value as User;
+	}
+
+  /**
    * Removes auth tokens.
    */
   function logout(): void {
@@ -150,6 +169,7 @@ export const useAuthStore = defineStore('auth', () => {
     register,
     login,
     refresh,
+    updateUser,
     logout
   }
 })
