@@ -1,4 +1,7 @@
 <script setup lang="ts">
+
+useSeoSetup({ title: 'About'});
+
 const text = ref(generateRandomText({ wordCount: 1000 }))
 
 /**

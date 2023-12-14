@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useTheme } from 'vuetify/lib/framework.mjs';
 
+useSeoSetup({ title: 'Components'});
+
 const vuetifyTheme = useTheme();
 
 const colors = ref<string[]>([ 'primary', 'secondary', 'warning', 'info', 'success', 'error' ]);

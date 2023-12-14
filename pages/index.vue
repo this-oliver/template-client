@@ -2,9 +2,11 @@
 import { useSidebarStore } from '~/stores/sidebar';
 import type { ActionItem } from '~/components/base/BaseCard.vue';
 
+useSeoSetup();
+
+const { notify } = useNotification();
 const runtimeConfig = useRuntimeConfig()
 const sidebarStore = useSidebarStore();
-const { notify } = useNotification();
 
 const features: ActionItem[] = [
   {

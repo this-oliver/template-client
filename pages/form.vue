@@ -1,4 +1,7 @@
 <script setup lang="ts">
+
+useSeoSetup({ title: 'Forms'});
+
 const editor = ref<string>('hey')
 </script>
 

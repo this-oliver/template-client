@@ -1,4 +1,7 @@
 <script setup lang="ts">
+
+useSeoSetup({ title: 'Localize', description: 'Support for multiple languages' });
+
 </script>
 
 <template>
