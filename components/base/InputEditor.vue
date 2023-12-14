@@ -1,49 +1,69 @@
 <script setup lang="ts">
 import { useEditor, EditorContent } from '@tiptap/vue-3';
-import StarterKit from '@tiptap/starter-kit';
-import Placeholder from '@tiptap/extension-placeholder';
+import { Document } from '@tiptap/extension-document';
+import { StarterKit } from '@tiptap/starter-kit';
+import { Placeholder } from '@tiptap/extension-placeholder';
 
 const emit = defineEmits(['update:modelValue']);
 
 const props = defineProps({
-	label: { type: String },
-	placeHolder: {
-		type: String,
-		default: 'Write something …'
-	},
-	value: {
-		type: String,
-		default: undefined
-	}
+  label: { type: String },
+  placeHolder: {
+    type: String,
+    default: 'What\'s on your mind?'
+  },
+  modelValue: {
+    type: String,
+    default: undefined
+  },
+  forceHeader: {
+    type: Boolean,
+    default: true
+  }
 });
 
-const form = ref<string>(props.value || '');
+const form = ref<string>(props.modelValue || '');
 
 const editor = useEditor({
-	content: props.value,
-	extensions: [
-		StarterKit,
-		Placeholder.configure({
-			// Use a placeholder:
-			placeholder: props.placeHolder
-			// Use different placeholders depending on the node type:
-			// placeholder: ({ node }) => {
-			//   if (node.type.name === 'heading') {
-			//     return 'What’s the title?'
-			//   }
+  content: props.modelValue,
+  extensions: [
+    // force header
+    props.forceHeader === true ? Document.extend({ content: 'heading block*' }) : Document,
+    // configure starter kit
+    StarterKit.configure({ document: props.forceHeader === true ? false : undefined }),
+    // configure placeholder
+    Placeholder.configure({
+      // Use different placeholders depending on the node type:
+      placeholder: ({ node }) => {
+        // set placeholder for title
+        if (node.type.name === 'heading') {
+          return props.placeHolder
+        }
 
-			//   return 'Can you add some further context?'
-			// },
-		})
-	],
-	// watch for changes to editor content and update the form value
-	onUpdate: () => {
-		// HTML
-		form.value = editor.value!.getHTML();
+        return '    ...';
+      }
+    })
+  ],
+  // watch for changes to editor content and update the form value
+  onUpdate: () => {
+    // HTML
+    form.value = editor.value!.getHTML();
 
-		// JSON
-		// this.$emit('update:modelValue', this.editor.getJSON())
-	}
+    // JSON
+    // this.$emit('update:modelValue', this.editor.getJSON())
+  }
+});
+
+/**
+ * returns true if editor is empty. This is useful so that the title
+ * can be forced
+ */
+const emptyContent = computed<boolean>(() => {
+  return (
+    form.value.length === 0 ||
+    editor.value?.isEmpty ||
+    editor.value?.view.state.doc.childCount === 0
+  );
 });
 
 interface EditOption {
@@ -59,175 +79,112 @@ interface EditOption {
 
 // edit options (i.e. bold, italic, etc.)
 const editOptions = computed<EditOption[]>(() => {
-	return [
-		{
-			name: 'bold',
-			action: () => editor.value!.chain().focus().toggleBold().run(),
-			disabled: !editor.value!.can().chain().focus().toggleBold().run(),
-			active: editor.value!.isActive('bold')
-		},
-		{
-			name: 'italic',
-			action: () => editor.value!.chain().focus().toggleItalic().run(),
-			disabled: !editor.value!.can().chain().focus().toggleItalic().run(),
-			active: editor.value!.isActive('italic')
-		},
-		{
-			name: 'strike',
-			action: () => editor.value!.chain().focus().toggleStrike().run(),
-			disabled: !editor.value!.can().chain().focus().toggleStrike().run(),
-			active: editor.value!.isActive('strike')
-		},
-		{
-			name: 'code',
-			action: () => editor.value!.chain().focus().toggleCode().run(),
-			disabled: !editor.value!.can().chain().focus().toggleCode().run(),
-			active: editor.value!.isActive('code')
-		},
-		{
-			name: 'clear marks',
-			action: () => editor.value!.chain().focus().unsetAllMarks().run(),
-			disabled: false,
-			active: false
-		},
-		{
-			name: 'clear nodes',
-			action: () => editor.value!.chain().focus().clearNodes().run(),
-			disabled: false,
-			active: false
-		},
-		{
-			name: 'paragraph',
-			action: () => editor.value!.chain().focus().setParagraph().run(),
-			disabled: false,
-			active: editor.value!.isActive('paragraph')
-		},
-		{
-			name: 'h1',
-			action: () =>
-        editor.value!.chain().focus().toggleHeading({ level: 1 }).run(),
-			disabled: false,
-			active: editor.value!.isActive('heading', { level: 1 })
-		},
-		{
-			name: 'h2',
-			action: () =>
+  return [
+    {
+      name: 'bold',
+      action: () => editor.value!.chain().focus().toggleBold().run(),
+      disabled: !editor.value!.can().chain().focus().toggleBold().run(),
+      active: editor.value!.isActive('bold')
+    },
+    {
+      name: 'italic',
+      action: () => editor.value!.chain().focus().toggleItalic().run(),
+      disabled: !editor.value!.can().chain().focus().toggleItalic().run(),
+      active: editor.value!.isActive('italic')
+    },
+    {
+      name: 'underline',
+      action: () =>
         editor.value!.chain().focus().toggleHeading({ level: 2 }).run(),
-			disabled: false,
-			active: editor.value!.isActive('heading', { level: 2 })
-		},
-		{
-			name: 'h3',
-			action: () =>
+      disabled: emptyContent.value || false,
+      active: editor.value!.isActive('heading', { level: 2 })
+    },
+    {
+      name: 'subheader',
+      action: () =>
         editor.value!.chain().focus().toggleHeading({ level: 3 }).run(),
-			disabled: false,
-			active: editor.value!.isActive('heading', { level: 3 })
-		},
-		{
-			name: 'h4',
-			action: () =>
-        editor.value!.chain().focus().toggleHeading({ level: 4 }).run(),
-			disabled: false,
-			active: editor.value!.isActive('heading', { level: 4 })
-		},
-		{
-			name: 'h5',
-			action: () =>
-        editor.value!.chain().focus().toggleHeading({ level: 5 }).run(),
-			disabled: false,
-			active: editor.value!.isActive('heading', { level: 5 })
-		},
-		{
-			name: 'h6',
-			action: () =>
-        editor.value!.chain().focus().toggleHeading({ level: 6 }).run(),
-			disabled: false,
-			active: editor.value!.isActive('heading', { level: 6 })
-		},
-		{
-			name: 'bullet list',
-			action: () => editor.value!.chain().focus().toggleBulletList().run(),
-			disabled: false,
-			active: editor.value!.isActive('bulletList')
-		},
-		{
-			name: 'ordered list',
-			action: () => editor.value!.chain().focus().toggleOrderedList().run(),
-			disabled: false,
-			active: editor.value!.isActive('orderedList')
-		},
-		{
+      disabled: emptyContent.value || false,
+      active: editor.value!.isActive('heading', { level: 3 })
+    },
+    {
+      name: 'paragraph',
+      action: () => editor.value!.chain().focus().setParagraph().run(),
+      disabled: emptyContent.value || false,
+      active: editor.value!.isActive('paragraph')
+    },
+    {
+      name: 'bullet list',
+      action: () => editor.value!.chain().focus().toggleBulletList().run(),
+      disabled: emptyContent.value || false,
+      active: editor.value!.isActive('bulletList')
+    },
+    {
+      name: 'ordered list',
+      action: () => editor.value!.chain().focus().toggleOrderedList().run(),
+      disabled: emptyContent.value || false,
+      active: editor.value!.isActive('orderedList')
+    },
+    {
+      name: 'quote',
+      action: () => editor.value!.chain().focus().toggleBlockquote().run(),
+      disabled: emptyContent.value || false,
+      active: editor.value!.isActive('blockquote')
+    },
+    {
 			name: 'code block',
 			action: () => editor.value!.chain().focus().toggleCodeBlock().run(),
 			disabled: false,
 			active: editor.value!.isActive('codeBlock')
 		},
-		{
-			name: 'blockquote',
-			action: () => editor.value!.chain().focus().toggleBlockquote().run(),
-			disabled: false,
-			active: editor.value!.isActive('blockquote')
-		},
-		{
-			name: 'horizontal rule',
-			action: () => editor.value!.chain().focus().setHorizontalRule().run(),
-			disabled: false,
-			active: false
-		}
-	];
+    {
+      name: 'horizontal line',
+      action: () => editor.value!.chain().focus().setHorizontalRule().run(),
+      disabled: emptyContent.value || false,
+      active: false
+    }
+  ];
 });
 
 // watch for changes to the prop value and update the editor
 watch(
-	() => props.value,
-	(value) => {
-		if(!value){
+  () => props.modelValue,
+  (value) => {
+    if (!value) {
       return;
     }
-    
+
     // HTML
-		const isSame = editor.value!.getHTML() === value;
+    const isSame = editor.value!.getHTML() === value;
 
-		// JSON
-		// const isSame = JSON.stringify(this.editor.getJSON()) === JSON.stringify(value)
+    // JSON
+    // const isSame = JSON.stringify(this.editor.getJSON()) === JSON.stringify(value)
 
-		if (isSame) {
-			return;
-		}
+    if (isSame) {
+      return;
+    }
 
     editor.value!.commands.setContent(value, false);
-	}
+  }
 );
 
 // watch for changes to the form value and emit an update event
 watch(
-	() => form.value,
-	(value) => {
-		emit('update:modelValue', value);
-	}
+  () => form.value,
+  (value) => {
+    emit('update:modelValue', value);
+  }
 );
 </script>
 
 <template>
   <div v-if="editor">
-    <base-btn
-      v-for="option in editOptions"
-      :key="option.name"
-      :class="{ 'is-active': option.active, 'ma-1': true }"
-      small
-      :disabled="option.disabled"
-      @click="option.action">
+    <base-btn v-for="option in editOptions" :key="option.name" :class="{ 'is-active': option.active, 'ma-1': true }" small
+      outlined :disabled="option.disabled" @click="option.action">
       {{ option.name }}
     </base-btn>
   </div>
-  <v-sheet
-    class="mt-2 pa-2"
-    color="white darken-2"
-    rounded="lg">
-    <editor-content
-      id="input-editor"
-      class="ma-2"
-      :editor="editor" />
+  <v-sheet class="mt-2 pa-2" color="white darken-2" rounded="lg">
+    <editor-content id="input-editor" class="ma-2" :editor="editor" />
   </v-sheet>
 </template>
 
@@ -236,7 +193,6 @@ watch(
   min-height: 200px;
 }
 
-/* needed to display placeholder: https://tiptap.dev/api/extensions/placeholder#additional-setup */
 .tiptap p.is-empty::before {
   color: #adb5bd;
   content: attr(data-placeholder);
@@ -254,7 +210,7 @@ watch(
 <style lang="scss">
 /* Basic editor styles */
 .tiptap {
-  > * + * {
+  >*+* {
     margin-top: 0.75em;
   }
 
@@ -307,5 +263,13 @@ watch(
     border-top: 2px solid rgba(#0d0d0d, 0.1);
     margin: 2rem 0;
   }
+}
+
+.tiptap .is-empty::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #ced4da;
+  pointer-events: none;
+  height: 0;
 }
 </style>
