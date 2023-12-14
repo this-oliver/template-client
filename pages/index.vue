@@ -45,7 +45,7 @@ const features: ActionItem[] = [
         <base-card>
           <v-card-title>Env Support</v-card-title>
           <v-card-subtitle>Supports public and server-side env variables</v-card-subtitle>
-          <v-card-text>This is an environement: <b>{{ runtimeConfig.public.apiUrl }}</b></v-card-text>
+          <v-card-text>This is an environement: <b>{{ runtimeConfig.public.baseUrl }}</b></v-card-text>
         </base-card>
       </v-col>
 
