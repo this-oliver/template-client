@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import BaseBtn from '~/components/base/BaseBtn.vue';
-import type { ComputedRef, PropType } from 'vue';
-import { computed } from 'vue';
 
 /**
  * Actions to be displayed in the card footer.
@@ -66,7 +64,7 @@ const props = defineProps({
 })
 
 type CardStyle = 'flat' | 'outlined' | 'text' | 'elevated' | 'tonal' | 'plain';
-const getCardStyle: ComputedRef<NonNullable<CardStyle> | undefined> = computed(() => {
+const getCardStyle = computed<NonNullable<CardStyle> | undefined>(() => {
   if(props.outlined === true){
     return 'outlined';
   } else if(props.plain === true){
@@ -78,7 +76,7 @@ const getCardStyle: ComputedRef<NonNullable<CardStyle> | undefined> = computed((
   }
 });
 
-const getActions: ComputedRef<ActionItem[]> = computed(() => {
+const getActions = computed<ActionItem[]>(() => {
   return props.actions.map((item) => {
     return {
       ...item,

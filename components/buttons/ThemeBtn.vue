@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import BaseBtn from '~/components/base/BaseBtn.vue';
 import { useTheme } from '~/composables/useTheme';
-import { computed } from 'vue';
 
 const { dark } = useTheme();
 

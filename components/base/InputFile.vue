@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { watch, ref } from 'vue';
 
 const props = defineProps({
   color: {

@@ -1,5 +1,3 @@
-import { useNotification } from './useNotification';
-
 export function useClipboard() {
   const { notify } = useNotification();
 

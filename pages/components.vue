@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue';
 import { useTheme } from 'vuetify/lib/framework.mjs';
 
 const vuetifyTheme = useTheme();

@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { ComputedRef } from 'vue'
-import { computed } from 'vue'
 
 const props = defineProps({
   color: {
@@ -60,7 +58,7 @@ const props = defineProps({
 const emit = defineEmits([ 'click' ])
 
 type ButtonStyle = 'outlined' | 'tonal' | 'plain' | 'text' | 'flat'
-const getButtonStyle: ComputedRef<ButtonStyle | undefined> = computed(() => {
+const getButtonStyle = computed<ButtonStyle | undefined>(() => {
   if (props.outlined === true) {
     return 'outlined'
   } else if (props.text === true) {
@@ -75,7 +73,7 @@ const getButtonStyle: ComputedRef<ButtonStyle | undefined> = computed(() => {
 })
 
 type ButtonSize = 'small' | 'medium' | 'large'
-const getButtonSize: ComputedRef<ButtonSize> = computed(() => {
+const getButtonSize = computed<ButtonSize>(() => {
   if (props.small) {
     return 'small'
   } else if (props.large) {

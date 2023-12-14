@@ -1,4 +1,3 @@
-import { ref, watch } from 'vue';
 import { useTheme as useVuetifyTheme } from 'vuetify/lib/framework.mjs';
 
 export function useTheme () {

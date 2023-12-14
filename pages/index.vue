@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useSidebarStore } from '~/stores/sidebar';
-import { useNotification } from '~/composables/useNotification';
 import type { ActionItem } from '~/components/base/BaseCard.vue';
 
 const runtimeConfig = useRuntimeConfig()
