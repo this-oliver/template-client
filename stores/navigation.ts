@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { useAuthStore } from '~/stores/auth-store';
+import { useAuthStore } from '~/stores/auth';
 import { useNotification } from '~/composables/useNotification';
 import type { ActionItem } from '~/components/base/BaseCard.vue';
 

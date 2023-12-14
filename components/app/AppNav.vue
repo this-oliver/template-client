@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { useDisplay } from 'vuetify';
-import { useNavigationStore } from '~/stores/navigation-store';
-import { useSidebarStore } from '~/stores/sidebar-store';
-import { useAuthStore } from '~/stores/auth-store';
+import { useNavigationStore } from '~/stores/navigation';
+import { useSidebarStore } from '~/stores/sidebar';
+import { useAuthStore } from '~/stores/auth';
 
 const { smAndDown } = useDisplay();
 const auth = useAuthStore();

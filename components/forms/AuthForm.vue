@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useAuthStore } from "~/stores/auth-store";
+import { useAuthStore } from "~/stores/auth";
 import type { User } from "~/types";
 
 type AuthMode = "login" | "register";
