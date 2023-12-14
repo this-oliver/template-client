@@ -31,19 +31,14 @@ export function useRequest () {
 	const runtimeConfig = useRuntimeConfig();
 	const BASE_URL = runtimeConfig.public.baseUrl;
 
-	/**
-   * If url is a valid url, return it. Otherwise, prepend the base url
-   */
+	// returns url if it is valid. otherwise returns url with prepended base url
 	function _buildUrl (url: string): string {
 		return _isValidUrl(url) ? url : `${BASE_URL}${url}`;
 	}
 
-	/**
-   * wrapper for fetch API with base url and default headers
-   */
-	async function request (url: string, options?: FetchConfig) {
-		try {
-			const config: RequestInit = {
+  // returns a fetch config
+  function _buildConfig(options?: FetchConfig): RequestInit {
+    const config: RequestInit = {
 				method: options?.method || DEFAULT_METHOD,
 				headers: { 'Content-Type': DEFAULT_CONTENT_TYPE }
 			};
@@ -62,9 +57,26 @@ export function useRequest () {
         config.headers!['Authorization' as keyof HeadersInit] = `Bearer ${options.authorization}`;
 			}
 
+      return config;
+  }
+
+  // returns a json string
+  function _buildBody(body: object | string): string {
+    if(typeof body === 'string'){
+      return body
+    }
+
+    return JSON.stringify(body);
+  }
+
+	// wrapper for fetch API with base url and default headers
+	async function request (url: string, options?: FetchConfig) {
+		try {
+			const config: RequestInit = _buildConfig(options);
+
 			const path = _buildUrl(url);
 
-			const response = await fetch(path, config);
+			const response = await fetch(path, {...config, ...options});
 
 			if (!response.ok) {
 				throw response;
@@ -84,13 +96,13 @@ export function useRequest () {
 		}
 	}
 
-  async function post (url: string, body: object, options?: FetchConfig) {
+  async function post (url: string, body: object | string, options?: FetchConfig) {
     url = _buildUrl(url);
 
     return useFetch(url, {
+      ..._buildConfig(options),
+      body: _buildBody(body),
       method: 'POST',
-      body: JSON.stringify(body),
-      ...options
     });
   }
 
@@ -98,18 +110,18 @@ export function useRequest () {
     url = _buildUrl(url);
 
     return useFetch(url, {
+      ..._buildConfig(options),
       method: 'GET',
-      ...options
     });
   }
 
-  async function patch (url: string, body: object, options?: FetchConfig) {
+  async function patch (url: string, body: object | string, options?: FetchConfig) {
     url = _buildUrl(url);
 
     return useFetch(url, {
+      ..._buildConfig(options),
+      body: _buildBody(body),
       method: 'PATCH',
-      body: JSON.stringify(body),
-      ...options
     });
   }
 
@@ -118,8 +130,8 @@ export function useRequest () {
     url = _buildUrl(url);
 
     return useFetch(url, {
+      ..._buildConfig(options),
       method: 'DELETE',
-      ...options
     });
   }
 

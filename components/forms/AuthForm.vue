@@ -19,6 +19,7 @@ const props = defineProps({
 
 const emit = defineEmits(['login', 'register'])
 
+const { notify } = useNotification();
 const { login, register } = useAuthStore();
 
 const form = reactive<AuthForm>({
@@ -36,12 +37,16 @@ const validForm = computed<boolean>(() => {
 });
 
 async function authenticate(){
-  if (props.mode === 'login') {
+  try {
+    if (props.mode === 'login') {
     const user: User = await login(form.username, form.password);
     emit('login', user);
   } else {
     const user: User = await register(form.username, form.password);
     emit('register', user);
+  }
+  } catch (error) {
+   notify('Authentication', (error as Error).message, 'error') 
   }
 }
 </script>

@@ -16,7 +16,7 @@ export const useAuthStore = defineStore('auth', () => {
   const STORAGE_KEY_ACCESS = 'app-token-access';
   const STORAGE_KEY_REFRESH = 'app-token-refresh';
 
-  const { request } = useRequest();
+  const { post, patch } = useRequest();
   const { get, set, remove } = useStorage();
 
   const user = ref<User>();
@@ -57,22 +57,23 @@ export const useAuthStore = defineStore('auth', () => {
     refreshToken.value = refreshT;
   }
 
+  type AuthResponse = { user: User, accessToken: string, refreshToken: string };
+
   /**
    * Register user. This function saves auth tokens and returns user if
    * if everything goes as planned.
    */
   async function register(username: string, password: string): Promise<User> {
-    const response = await request('/auth/register', {
-      method: 'POST',
-      body: JSON.stringify({ username, password }),
-    });
+    const { data } = await post('/auth/register', { username, password });
 
-    if(!response.user){
+    const auth = data.value as AuthResponse;
+    
+    if(!auth.user){
       throw new Error('Invalid username or password.');
     }
 
-    _setUser(response.user);
-    _setTokens(response.accessToken, response.refreshToken);
+    _setUser(auth.user);
+    _setTokens(auth.accessToken, auth.refreshToken);
     
     return user.value as User;
   }
@@ -82,17 +83,16 @@ export const useAuthStore = defineStore('auth', () => {
    * are valid.
    */
   async function login(username: string, password: string): Promise<User>{
-    const response = await request('/auth/login', {
-      method: 'POST',
-      body: JSON.stringify({ username, password }),
-    });
-
-    if(!response.user){
+    const { data } = await post('/auth/login', { username, password })
+    
+    const auth = data.value as AuthResponse;
+    
+    if(!auth.user){
       throw new Error('Invalid username or password.');
     }
 
-    _setUser(response.user);
-    _setTokens(response.accessToken, response.refreshToken);
+    _setUser(auth.user);
+    _setTokens(auth.accessToken, auth.refreshToken);
     
     return user.value as User;
   }
@@ -104,24 +104,21 @@ export const useAuthStore = defineStore('auth', () => {
     if(!refreshToken.value){
       throw new Error('Missing refresh token.');
     }
-    
-    const response = await request('/auth/refresh', {
-      method: 'POST',
-      body: JSON.stringify({ refreshToken: refreshToken.value, accessToken: accessToken.value }),
-    });
 
-    _setTokens(response.accessToken, response.refreshToken);
+    const { data } = await post('/auth/refresh', { refreshToken: refreshToken.value, accessToken: accessToken.value });
+
+    const tokens = data.value as {accessToken: string, refreshToken: string};
+
+    _setTokens(tokens.accessToken, tokens.refreshToken);
   }
 
   /**
    * Updates user.
    */
 	async function updateUser (id: string, patchedUser: Partial<User>): Promise<User> {
-		const updatedUser = await request(`/users/${id}`, {
-			method: 'PATCH',
-			body: JSON.stringify(patchedUser),
-			authorization: accessToken.value
-		});
+    const { data } = await patch(`/users/${id}`, patchedUser, { authorization: accessToken.value})
+
+    const updatedUser = data.value as User;
 
 		if (!updatedUser) {
 			throw new Error('Invalid user.');
