@@ -1,12 +1,10 @@
-import { defineStore } from 'pinia'
+import { defineStore } from 'pinia';
 
 export const useSidebarStore = defineStore('sidebar', {
-  state: () => ({
-    visible: false
-  }),
-  actions: {
-    toggle() {
-      this.visible = !this.visible
-    }
-  }
-})
+	state: () => ({ visible: false }),
+	actions: {
+		toggle() {
+			this.visible = !this.visible;
+		}
+	}
+});

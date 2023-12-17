@@ -36,38 +36,38 @@ export function useRequest () {
 		return _isValidUrl(url) ? url : `${BASE_URL}${url}`;
 	}
 
-  // returns a fetch config
-  function _buildConfig(options?: FetchConfig): RequestInit {
-    const config: RequestInit = {
-				method: options?.method || DEFAULT_METHOD,
-				headers: { 'Content-Type': DEFAULT_CONTENT_TYPE }
-			};
+	// returns a fetch config
+	function _buildConfig(options?: FetchConfig): RequestInit {
+		const config: RequestInit = {
+			method: options?.method || DEFAULT_METHOD,
+			headers: { 'Content-Type': DEFAULT_CONTENT_TYPE }
+		};
 
-      if(options?.contentType){
+		if(options?.contentType){
         config.headers!['Content-Type' as keyof HeadersInit] = options.contentType;
-      } else if (options?.contentType === undefined){
-        delete config.headers!['Content-Type' as keyof HeadersInit];
-      }
+		} else if (options?.contentType === undefined){
+			delete config.headers!['Content-Type' as keyof HeadersInit];
+		}
 
-			if (options?.body) {
-				config.body = options.body;
-			}
+		if (options?.body) {
+			config.body = options.body;
+		}
 
-			if (options?.authorization) {
+		if (options?.authorization) {
         config.headers!['Authorization' as keyof HeadersInit] = `Bearer ${options.authorization}`;
-			}
+		}
 
-      return config;
-  }
+		return config;
+	}
 
-  // returns a json string
-  function _buildBody(body: object | string): string {
-    if(typeof body === 'string'){
-      return body
-    }
+	// returns a json string
+	function _buildBody(body: object | string): string {
+		if(typeof body === 'string'){
+			return body;
+		}
 
-    return JSON.stringify(body);
-  }
+		return JSON.stringify(body);
+	}
 
 	// wrapper for fetch API with base url and default headers
 	async function request (url: string, options?: FetchConfig) {
@@ -76,14 +76,14 @@ export function useRequest () {
 
 			const path = _buildUrl(url);
 
-			const response = await fetch(path, {...config, ...options});
+			const response = await fetch(path, { ...config, ...options });
 
 			if (!response.ok) {
 				throw response;
 			}
 
 			return response.json();
-		} catch (error: any) {
+		} catch (error: unknown) {
 			if (error instanceof Response) {
 				const message = await error.text();
 
@@ -96,44 +96,44 @@ export function useRequest () {
 		}
 	}
 
-  async function post (url: string, body: object | string, options?: FetchConfig) {
-    url = _buildUrl(url);
+	async function post (url: string, body: object | string, options?: FetchConfig) {
+		url = _buildUrl(url);
 
-    return useFetch(url, {
-      ..._buildConfig(options),
-      body: _buildBody(body),
-      method: 'POST',
-    });
-  }
+		return useFetch(url, {
+			..._buildConfig(options),
+			body: _buildBody(body),
+			method: 'POST',
+		});
+	}
 
-  async function get (url: string, options?: FetchConfig) {
-    url = _buildUrl(url);
+	async function get (url: string, options?: FetchConfig) {
+		url = _buildUrl(url);
 
-    return useFetch(url, {
-      ..._buildConfig(options),
-      method: 'GET',
-    });
-  }
+		return useFetch(url, {
+			..._buildConfig(options),
+			method: 'GET',
+		});
+	}
 
-  async function patch (url: string, body: object | string, options?: FetchConfig) {
-    url = _buildUrl(url);
+	async function patch (url: string, body: object | string, options?: FetchConfig) {
+		url = _buildUrl(url);
 
-    return useFetch(url, {
-      ..._buildConfig(options),
-      body: _buildBody(body),
-      method: 'PATCH',
-    });
-  }
+		return useFetch(url, {
+			..._buildConfig(options),
+			body: _buildBody(body),
+			method: 'PATCH',
+		});
+	}
 
-  // 'delete' is a reserved word
-  async function remove (url: string, options?: FetchConfig) {
-    url = _buildUrl(url);
+	// 'delete' is a reserved word
+	async function remove (url: string, options?: FetchConfig) {
+		url = _buildUrl(url);
 
-    return useFetch(url, {
-      ..._buildConfig(options),
-      method: 'DELETE',
-    });
-  }
+		return useFetch(url, {
+			..._buildConfig(options),
+			method: 'DELETE',
+		});
+	}
 
 	return { request, post, get, patch, remove };
 }

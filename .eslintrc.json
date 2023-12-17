@@ -1,0 +1,38 @@
+{
+	"root": true,
+	"extends": [
+		"plugin:vue/vue3-strongly-recommended",
+		"plugin:@typescript-eslint/recommended"
+	],
+	"parser": "@typescript-eslint/parser",
+	"plugins": ["@typescript-eslint"],
+	"parserOptions": {
+		"ecmaVersion": 12
+	},
+	"rules": {
+		"indent": ["error", "tab"],
+		"semi": ["error", "always"],
+		"prefer-const": "error",
+		"no-var": "error",
+		"no-unused-vars": "error",
+		"object-curly-spacing": ["error", "always"],
+		"object-curly-newline": ["error", { "multiline": true }]
+	},
+	"overrides": [
+		// use different parser for vue files
+		{
+			"files": ["*.vue"],
+			"parser": "vue-eslint-parser",
+			"parserOptions": {
+				"parser": "@typescript-eslint/parser"
+			}
+		},
+		// ignore 'vue/multi-word-component-names' in pages/ and layouts/ (include subdirectories)
+		{
+			"files": ["pages/**/*.vue", "layouts/**/*.vue"],
+			"rules": {
+				"vue/multi-word-component-names": "off"
+			}
+		}
+	]
+}

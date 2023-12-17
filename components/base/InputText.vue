@@ -71,13 +71,15 @@ watch(
     :type="data.showPassword ? 'text' : 'password'"
     :outlined="outlined"
     :success="isValid === true"
-    :error="isValid === false">
+    :error="isValid === false"
+  >
     <template #append-inner>
       <base-btn
         small
         color="grey"
         :hide-from-tab="true"
-        @click="data.showPassword = !data.showPassword">
+        @click="data.showPassword = !data.showPassword"
+      >
         {{ data.showPassword ? 'hide' : 'show' }}
       </base-btn>
     </template>
@@ -92,5 +94,6 @@ watch(
     :type="type"
     :outlined="outlined"
     :success="isValid === true"
-    :error="isValid === false" />
+    :error="isValid === false"
+  />
 </template>

@@ -15,14 +15,17 @@ const navigation = useNavigationStore();
     id="app-nav"
     app
     flat
-    color="transparent">
+    color="transparent"
+  >
     <v-app-bar-nav-icon
       v-if="smAndDown"
-      @click="drawer.toggle" />
+      @click="drawer.toggle"
+    />
 
     <router-link
       class="plain"
-      to="/">
+      to="/"
+    >
       <app-logo />
     </router-link>
 
@@ -36,7 +39,8 @@ const navigation = useNavigationStore();
         plain
         :color="option.color"
         :to="option.to"
-        @click="option.action">
+        @click="option.action"
+      >
         {{ option.label }}
       </base-btn>
 

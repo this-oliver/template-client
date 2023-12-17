@@ -1,12 +1,14 @@
 {
   "name": "template-nuxt",
-  "version": "0.11.8",
+  "version": "0.12.0",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev --dotenv .env.local",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare",
+    "postinstall": "nuxt prepare && simple-git-hooks",
+    "lint": "eslint --ext .ts,.vue --ignore-path .gitignore .",
+    "lint:fix": "eslint --ext .ts,.vue --ignore-path .gitignore --fix .",
     "docker:build": "docker build -t template-nuxt .",
     "docker:run": "docker run -p 3000:3000 --env-file .env template-nuxt",
     "bump": "npx fist-bump"
@@ -25,11 +27,26 @@
   "devDependencies": {
     "@intlify/unplugin-vue-i18n": "^1.5.0",
     "@invictus.codes/nuxt-vuetify": "^0.2.20",
+    "@nuxtjs/eslint-module": "^4.1.0",
     "@nuxtjs/i18n": "8.0.0-rc.5",
     "@types/node": "^18",
+    "@typescript-eslint/eslint-plugin": "^6.14.0",
+    "@typescript-eslint/parser": "^6.14.0",
+    "eslint": "^8.55.0",
+    "eslint-plugin-vue": "^9.19.2",
     "fist-bump": "^2.3.2",
+    "lint-staged": "^15.2.0",
     "nuxt": "^3.7.4",
+    "simple-git-hooks": "^2.9.0",
+    "typescript": "^5.3.3",
     "vue": "^3.3.8",
+    "vue-eslint-parser": "^9.3.2",
     "vue-router": "^4.2.5"
+  },
+  "lint-staged": {
+    "*.{ts}": "pnpm lint:fix"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm lint-staged"
   }
 }

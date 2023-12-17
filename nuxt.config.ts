@@ -1,20 +1,20 @@
-import { resolve, dirname } from 'node:path' 
-import { fileURLToPath } from 'url' 
-import VueI18nVitePlugin from '@intlify/unplugin-vue-i18n/vite' 
+import { resolve, dirname } from 'node:path'; 
+import { fileURLToPath } from 'url'; 
+import VueI18nVitePlugin from '@intlify/unplugin-vue-i18n/vite'; 
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  build: {
-    transpile: [
-      'vue-sonner',
-      'vue-i18n'
-    ]
-  },
+	build: {
+		transpile: [
+			'vue-sonner',
+			'vue-i18n'
+		]
+	},
 	
-  /**
+	/**
    * Use styling globally in app
    */
-  css: [
+	css: [
 		'~/assets/styles/fonts.css'
 	],
 
@@ -30,13 +30,14 @@ export default defineNuxtConfig({
 		{ path: '~/components/forms' }
 	],
 
-  /**
+	/**
    * Adds modules to app
    */
 	modules: [
 		'@invictus.codes/nuxt-vuetify',
-    '@nuxtjs/i18n',
-		'@pinia/nuxt'
+		'@nuxtjs/eslint-module',
+		'@nuxtjs/i18n',
+		'@pinia/nuxt',
 	],
 
 	/**
@@ -45,17 +46,17 @@ export default defineNuxtConfig({
    * in the server side.
    */
 	runtimeConfig: {
-    secret: '',
-    public: { baseUrl: '' }
-  },
+		secret: '',
+		public: { baseUrl: '' }
+	},
 
-  vite: { 
-    plugins: [ 
-      VueI18nVitePlugin({ 
-        include: [ 
-          resolve(dirname(fileURLToPath(import.meta.url)), './locales/*.json') 
-        ] 
-      }) 
-    ] 
-  } 
+	vite: { 
+		plugins: [ 
+			VueI18nVitePlugin({ 
+				include: [ 
+					resolve(dirname(fileURLToPath(import.meta.url)), './locales/*.json') 
+				] 
+			}) 
+		] 
+	} 
 });

@@ -30,11 +30,11 @@ const validForm = computed<boolean>(() => {
 		return form.username.length > 0;
 	}
 
-  return (
-    form.username.length > 0 &&
+	return (
+		form.username.length > 0 &&
     form.password.length > 0 &&
     form.password === form.passwordConfirmation
-  );
+	);
 });
 
 const options = computed<ActionItem[]>(() => {
@@ -60,14 +60,17 @@ const options = computed<ActionItem[]>(() => {
   <base-card :actions="options">
     <InputText
       v-model="form.username"
-      label="Username" />
+      label="Username"
+    />
     <InputText
       v-model="form.password"
       type="password"
-      label="Password" />
+      label="Password"
+    />
     <InputText
       v-model="form.passwordConfirmation"
       type="password"
-      label="Confirm password" />
+      label="Confirm password"
+    />
   </base-card>
 </template>

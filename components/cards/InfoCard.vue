@@ -1,19 +1,19 @@
 <script setup lang="ts">
 const props = defineProps({
-  message: {
-    type: String,
-    required: true
-  },
+	message: {
+		type: String,
+		required: true
+	},
 
-  htmlIsh: {
-    type: Boolean,
-    default: false
-  },
+	htmlIsh: {
+		type: Boolean,
+		default: false
+	},
 
-  color: {
-    type: String,
-    default: 'primary'
-  }
+	color: {
+		type: String,
+		default: 'primary'
+	}
 });
 </script>
 
@@ -22,7 +22,8 @@ const props = defineProps({
     <v-card-text>
       <span
         v-if="props.htmlIsh"
-        v-html="props.message" />
+        v-html="props.message"
+      />
       <span v-else>{{ props.message }}</span>
     </v-card-text>
   </base-card>

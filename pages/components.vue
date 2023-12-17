@@ -1,19 +1,28 @@
 <script setup lang="ts">
 import { useTheme } from 'vuetify/lib/framework.mjs';
 
-useSeoSetup({ title: 'Components'});
+useSeoSetup({ title: 'Components' });
 
 const vuetifyTheme = useTheme();
 
 const colors = ref<string[]>([ 'primary', 'secondary', 'warning', 'info', 'success', 'error' ]);
 
-const theme = reactive({
-  primary: '' as string,
-  secondary: '' as string,
-  warning: '' as string,
-  info: '' as string,
-  success: '' as string,
-  error: '' as string
+interface ThemeColor {
+  primary: string;
+  secondary: string;
+  warning: string;
+  info: string;
+  success: string;
+  error: string;
+}
+
+const theme = reactive<ThemeColor>({
+	primary: '' as string,
+	secondary: '' as string,
+	warning: '' as string,
+	info: '' as string,
+	success: '' as string,
+	error: '' as string
 });
 
 const loadBtn = ref<boolean>(false);
@@ -29,62 +38,62 @@ const flatCard = ref<boolean>(false);
 const plainCard = ref<boolean>(false);
 
 const btnOptions = ref([
-  {
-    label: 'Loading',
-    value: loadBtn
-  },
-  {
-    label: 'Outlined',
-    value: outlineBtn
-  },
-  {
-    label: 'Flat',
-    value: flatBtn
-  },
-  {
-    label: 'Plain',
-    value: plainBtn
-  },
-  {
-    label: 'Text',
-    value: textBtn
-  },
-  {
-    label: 'Disabled',
-    value: disabledBtn
-  }
-])
+	{
+		label: 'Loading',
+		value: loadBtn
+	},
+	{
+		label: 'Outlined',
+		value: outlineBtn
+	},
+	{
+		label: 'Flat',
+		value: flatBtn
+	},
+	{
+		label: 'Plain',
+		value: plainBtn
+	},
+	{
+		label: 'Text',
+		value: textBtn
+	},
+	{
+		label: 'Disabled',
+		value: disabledBtn
+	}
+]);
 
 const cardOptions = ref([
-  {
-    label: 'Loading',
-    value: loadCard
-  },
-  {
-    label: 'Outlined',
-    value: outlineCard
-  },
-  {
-    label: 'Flat',
-    value: flatCard
-  },
-  {
-    label: 'Plain',
-    value: plainCard
-  }
-])
+	{
+		label: 'Loading',
+		value: loadCard
+	},
+	{
+		label: 'Outlined',
+		value: outlineCard
+	},
+	{
+		label: 'Flat',
+		value: flatCard
+	},
+	{
+		label: 'Plain',
+		value: plainCard
+	}
+]);
 
-function getColor(color: string) {
-  return (theme as any)[color];
+function getColor(color: string): string {
+	return theme[color as keyof ThemeColor];
 }
 
 onMounted(() => {
-  theme.primary = vuetifyTheme.current.value.colors.primary;
-  theme.secondary = vuetifyTheme.current.value.colors.secondary;
-  theme.warning = vuetifyTheme.current.value.colors.warning;
-  theme.info = vuetifyTheme.current.value.colors.info;
-  theme.success = vuetifyTheme.current.value.colors.success;
-  theme.error = vuetifyTheme.current.value.colors.error;
+	theme.primary = vuetifyTheme.current.value.colors.primary;
+	theme.secondary = vuetifyTheme.current.value.colors.secondary;
+	theme.warning = vuetifyTheme.current.value.colors.warning;
+	theme.info = vuetifyTheme.current.value.colors.info;
+	theme.success = vuetifyTheme.current.value.colors.success;
+	theme.error = vuetifyTheme.current.value.colors.error;
 });
 </script>
 
@@ -102,16 +111,18 @@ onMounted(() => {
           :outlined="option.value"
           size="small"
           class="mx-1"
-          @click="option.value = !option.value">
+          @click="option.value = !option.value"
+        >
           {{ option.label }}
         </base-btn>
       </v-col>
 
-      <v-divider class="border-opacity-25"></v-divider>
+      <v-divider class="border-opacity-25" />
 
       <v-col
         v-for="color in colors"
-        :key="color">
+        :key="color"
+      >
         <base-btn
           :color="getColor(color)"
           :loading="loadBtn"
@@ -120,7 +131,10 @@ onMounted(() => {
           :plain="plainBtn"
           :text="textBtn"
           :disabled="disabledBtn"
-          class="button">{{ color }}</base-btn>
+          class="button"
+        >
+          {{ color }}
+        </base-btn>
       </v-col>
     </v-row>
 
@@ -136,25 +150,28 @@ onMounted(() => {
           :outlined="option.value"
           size="small"
           class="mx-1"
-          @click="option.value = !option.value">
+          @click="option.value = !option.value"
+        >
           {{ option.label }}
         </base-btn>
       </v-col>
 
-      <v-divider class="border-opacity-25"></v-divider>
+      <v-divider class="border-opacity-25" />
 
       <v-col
         v-for="color in colors"
         :key="color"
         cols="11"
-        md="4">
+        md="4"
+      >
         <base-card
           :color="getColor(color)"
           :loading="loadCard"
           :outlined="outlineCard"
           :flat="flatCard"
           :plain="plainCard"
-          class="card">
+          class="card"
+        >
           <v-card-title>Title</v-card-title>
           <v-card-subtitle>Subtitle</v-card-subtitle>
           <v-card-text>
@@ -167,8 +184,6 @@ onMounted(() => {
         </base-card>
       </v-col>
     </v-row>
-
-
   </base-page>
 </template>
 

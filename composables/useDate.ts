@@ -11,21 +11,21 @@ interface DateConfig {
 }
 
 export function useDate() {
-  function getDateFromTimestamp(timestamp: number, config?: DateConfig): string {
+	function getDateFromTimestamp(timestamp: number, config?: DateConfig): string {
 		return Dayjs(timestamp).format(config?.dateFormat || DEFAULT_DATEFORMAT);
 	}
 
-  function getTimeFromTimestamp(timestamp: number, config?: DateConfig): string {
-    return Dayjs(timestamp).locale(config?.locale || DEFAULT_LOCALE).format(config?.timeFormat || DEFAULT_TIMEFORMAT);
-  }
+	function getTimeFromTimestamp(timestamp: number, config?: DateConfig): string {
+		return Dayjs(timestamp).locale(config?.locale || DEFAULT_LOCALE).format(config?.timeFormat || DEFAULT_TIMEFORMAT);
+	}
 
-  function getTimestampFromDate(date: string, config?: DateConfig): number {
-    return Dayjs(date).unix();
-  }
+	function getTimestampFromDate(date: string): number {
+		return Dayjs(date).unix();
+	}
 
 	return {
 		getDateFromTimestamp,
-    getTimeFromTimestamp,
-    getTimestampFromDate
+		getTimeFromTimestamp,
+		getTimestampFromDate
 	};
 }

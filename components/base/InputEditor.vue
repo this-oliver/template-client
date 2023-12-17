@@ -7,51 +7,54 @@ import { Placeholder } from '@tiptap/extension-placeholder';
 const emit = defineEmits(['update:modelValue']);
 
 const props = defineProps({
-  label: { type: String },
-  placeHolder: {
-    type: String,
-    default: 'What\'s on your mind?'
-  },
-  modelValue: {
-    type: String,
-    default: undefined
-  },
-  forceHeader: {
-    type: Boolean,
-    default: true
-  }
+	label: {
+		type: String,
+		default: undefined 
+	},
+	placeHolder: {
+		type: String,
+		default: 'What\'s on your mind?'
+	},
+	modelValue: {
+		type: String,
+		default: undefined
+	},
+	forceHeader: {
+		type: Boolean,
+		default: true
+	}
 });
 
 const form = ref<string>(props.modelValue || '');
 
 const editor = useEditor({
-  content: props.modelValue,
-  extensions: [
-    // force header
-    props.forceHeader === true ? Document.extend({ content: 'heading block*' }) : Document,
-    // configure starter kit
-    StarterKit.configure({ document: props.forceHeader === true ? false : undefined }),
-    // configure placeholder
-    Placeholder.configure({
-      // Use different placeholders depending on the node type:
-      placeholder: ({ node }) => {
-        // set placeholder for title
-        if (node.type.name === 'heading') {
-          return props.placeHolder
-        }
+	content: props.modelValue,
+	extensions: [
+		// force header
+		props.forceHeader === true ? Document.extend({ content: 'heading block*' }) : Document,
+		// configure starter kit
+		StarterKit.configure({ document: props.forceHeader === true ? false : undefined }),
+		// configure placeholder
+		Placeholder.configure({
+			// Use different placeholders depending on the node type:
+			placeholder: ({ node }) => {
+				// set placeholder for title
+				if (node.type.name === 'heading') {
+					return props.placeHolder;
+				}
 
-        return '    ...';
-      }
-    })
-  ],
-  // watch for changes to editor content and update the form value
-  onUpdate: () => {
-    // HTML
-    form.value = editor.value!.getHTML();
+				return '    ...';
+			}
+		})
+	],
+	// watch for changes to editor content and update the form value
+	onUpdate: () => {
+		// HTML
+		form.value = editor.value!.getHTML();
 
-    // JSON
-    // this.$emit('update:modelValue', this.editor.getJSON())
-  }
+		// JSON
+		// this.$emit('update:modelValue', this.editor.getJSON())
+	}
 });
 
 /**
@@ -59,11 +62,11 @@ const editor = useEditor({
  * can be forced
  */
 const emptyContent = computed<boolean>(() => {
-  return (
-    form.value.length === 0 ||
+	return (
+		form.value.length === 0 ||
     editor.value?.isEmpty ||
     editor.value?.view.state.doc.childCount === 0
-  );
+	);
 });
 
 interface EditOption {
@@ -79,112 +82,127 @@ interface EditOption {
 
 // edit options (i.e. bold, italic, etc.)
 const editOptions = computed<EditOption[]>(() => {
-  return [
-    {
-      name: 'bold',
-      action: () => editor.value!.chain().focus().toggleBold().run(),
-      disabled: !editor.value!.can().chain().focus().toggleBold().run(),
-      active: editor.value!.isActive('bold')
-    },
-    {
-      name: 'italic',
-      action: () => editor.value!.chain().focus().toggleItalic().run(),
-      disabled: !editor.value!.can().chain().focus().toggleItalic().run(),
-      active: editor.value!.isActive('italic')
-    },
-    {
-      name: 'underline',
-      action: () =>
+	return [
+		{
+			name: 'bold',
+			action: () => editor.value!.chain().focus().toggleBold().run(),
+			disabled: !editor.value!.can().chain().focus().toggleBold().run(),
+			active: editor.value!.isActive('bold')
+		},
+		{
+			name: 'italic',
+			action: () => editor.value!.chain().focus().toggleItalic().run(),
+			disabled: !editor.value!.can().chain().focus().toggleItalic().run(),
+			active: editor.value!.isActive('italic')
+		},
+		{
+			name: 'underline',
+			action: () =>
         editor.value!.chain().focus().toggleHeading({ level: 2 }).run(),
-      disabled: emptyContent.value || false,
-      active: editor.value!.isActive('heading', { level: 2 })
-    },
-    {
-      name: 'subheader',
-      action: () =>
+			disabled: emptyContent.value || false,
+			active: editor.value!.isActive('heading', { level: 2 })
+		},
+		{
+			name: 'subheader',
+			action: () =>
         editor.value!.chain().focus().toggleHeading({ level: 3 }).run(),
-      disabled: emptyContent.value || false,
-      active: editor.value!.isActive('heading', { level: 3 })
-    },
-    {
-      name: 'paragraph',
-      action: () => editor.value!.chain().focus().setParagraph().run(),
-      disabled: emptyContent.value || false,
-      active: editor.value!.isActive('paragraph')
-    },
-    {
-      name: 'bullet list',
-      action: () => editor.value!.chain().focus().toggleBulletList().run(),
-      disabled: emptyContent.value || false,
-      active: editor.value!.isActive('bulletList')
-    },
-    {
-      name: 'ordered list',
-      action: () => editor.value!.chain().focus().toggleOrderedList().run(),
-      disabled: emptyContent.value || false,
-      active: editor.value!.isActive('orderedList')
-    },
-    {
-      name: 'quote',
-      action: () => editor.value!.chain().focus().toggleBlockquote().run(),
-      disabled: emptyContent.value || false,
-      active: editor.value!.isActive('blockquote')
-    },
-    {
+			disabled: emptyContent.value || false,
+			active: editor.value!.isActive('heading', { level: 3 })
+		},
+		{
+			name: 'paragraph',
+			action: () => editor.value!.chain().focus().setParagraph().run(),
+			disabled: emptyContent.value || false,
+			active: editor.value!.isActive('paragraph')
+		},
+		{
+			name: 'bullet list',
+			action: () => editor.value!.chain().focus().toggleBulletList().run(),
+			disabled: emptyContent.value || false,
+			active: editor.value!.isActive('bulletList')
+		},
+		{
+			name: 'ordered list',
+			action: () => editor.value!.chain().focus().toggleOrderedList().run(),
+			disabled: emptyContent.value || false,
+			active: editor.value!.isActive('orderedList')
+		},
+		{
+			name: 'quote',
+			action: () => editor.value!.chain().focus().toggleBlockquote().run(),
+			disabled: emptyContent.value || false,
+			active: editor.value!.isActive('blockquote')
+		},
+		{
 			name: 'code block',
 			action: () => editor.value!.chain().focus().toggleCodeBlock().run(),
 			disabled: false,
 			active: editor.value!.isActive('codeBlock')
 		},
-    {
-      name: 'horizontal line',
-      action: () => editor.value!.chain().focus().setHorizontalRule().run(),
-      disabled: emptyContent.value || false,
-      active: false
-    }
-  ];
+		{
+			name: 'horizontal line',
+			action: () => editor.value!.chain().focus().setHorizontalRule().run(),
+			disabled: emptyContent.value || false,
+			active: false
+		}
+	];
 });
 
 // watch for changes to the prop value and update the editor
 watch(
-  () => props.modelValue,
-  (value) => {
-    if (!value) {
-      return;
-    }
+	() => props.modelValue,
+	(value: string) => {
+		if (!value) {
+			return;
+		}
 
-    // HTML
-    const isSame = editor.value!.getHTML() === value;
+		// HTML
+		const isSame = editor.value!.getHTML() === value;
 
-    // JSON
-    // const isSame = JSON.stringify(this.editor.getJSON()) === JSON.stringify(value)
+		// JSON
+		// const isSame = JSON.stringify(this.editor.getJSON()) === JSON.stringify(value)
 
-    if (isSame) {
-      return;
-    }
+		if (isSame) {
+			return;
+		}
 
     editor.value!.commands.setContent(value, false);
-  }
+	}
 );
 
 // watch for changes to the form value and emit an update event
 watch(
-  () => form.value,
-  (value) => {
-    emit('update:modelValue', value);
-  }
+	() => form.value,
+	(value: string) => {
+		emit('update:modelValue', value);
+	}
 );
 </script>
 
 <template>
   <div v-if="editor">
-    <base-btn v-for="option in editOptions" :key="option.name" :class="{ 'is-active': option.active, 'ma-1': true }" small
-      outlined :disabled="option.disabled" @click="option.action">
+    <base-btn
+      v-for="option in editOptions"
+      :key="option.name"
+      :class="{ 'is-active': option.active, 'ma-1': true }"
+      small
+      outlined
+      :disabled="option.disabled"
+      @click="option.action"
+    >
       {{ option.name }}
     </base-btn>
   </div>
-  <v-sheet class="mt-2 pa-2" color="white darken-2" rounded="lg">
-    <editor-content id="input-editor" class="ma-2" :editor="editor" />
+  <v-sheet
+    class="mt-2 pa-2"
+    color="white darken-2"
+    rounded="lg"
+  >
+    <editor-content
+      id="input-editor"
+      class="ma-2"
+      :editor="editor"
+    />
   </v-sheet>
 </template>
 

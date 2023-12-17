@@ -1,13 +1,13 @@
 export function useClipboard() {
-  const { notify } = useNotification();
+	const { notify } = useNotification();
 
 
-  function copyToClipboard(value: string, message?: string){
-    message = message || 'Copied to clipboard';
+	function copyToClipboard(value: string, message?: string){
+		message = message || 'Copied to clipboard';
 
-    navigator.clipboard.writeText(value);
-    notify('Theme Builder', message);
-  }
+		navigator.clipboard.writeText(value);
+		notify('Theme Builder', message);
+	}
 
-  return { copyToClipboard };
+	return { copyToClipboard };
 }

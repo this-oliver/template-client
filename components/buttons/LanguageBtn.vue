@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { availableLocales } = useI18n()
+const { availableLocales } = useI18n();
 
 interface Language {
   title: string;
@@ -7,12 +7,12 @@ interface Language {
 }
 
 const supportedLanguages = computed<Language[]>(() => {
-  return availableLocales.map((locale) => {
-    return {
-      title: locale.toUpperCase(),
-      value: locale
-    }
-  })
+	return availableLocales.map((locale) => {
+		return {
+			title: locale.toUpperCase(),
+			value: locale
+		};
+	});
 });
 
 
@@ -24,7 +24,11 @@ const supportedLanguages = computed<Language[]>(() => {
 
     <v-menu activator="parent">
       <v-list>
-        <v-list-item v-for="language in supportedLanguages" :key="language.value" @click="$i18n.locale = language.value">
+        <v-list-item
+          v-for="language in supportedLanguages"
+          :key="language.value"
+          @click="$i18n.locale = language.value"
+        >
           <v-list-item-title>{{ language.title }}</v-list-item-title>
         </v-list-item>
       </v-list>

@@ -8,8 +8,11 @@
     <v-main>
       <v-container>
         <v-row justify="center">
-          <v-col cols="11" md="10">
-            <slot></slot>
+          <v-col
+            cols="11"
+            md="10"
+          >
+            <slot />
           </v-col>
         </v-row>
       </v-container>

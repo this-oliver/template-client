@@ -3,7 +3,7 @@ import { defineComponent, h, shallowRef } from 'vue';
 import InfoCardVue from '~/components/cards/InfoCard.vue';
 
 export function useNotification () {
-  const { $toast } = useNuxtApp()
+	const { $toast } = useNuxtApp();
   
   type NotificationType = 'general' | 'warning' | 'error' | 'success'
 
@@ -15,7 +15,7 @@ export function useNotification () {
 	}
 
 	function _trigger (notification: Notification) {
-    $toast(shallowRef(notification.component));
+		$toast(shallowRef(notification.component));
 	}
 
 	function _mapTypeToColor (type: NotificationType): string {
@@ -54,7 +54,7 @@ export function useNotification () {
 	}
 
 	function notify (title: string, message: string, type: NotificationType = 'general') {
-    const notification: Notification = _renderNotifictaion(title, message, type);
+		const notification: Notification = _renderNotifictaion(title, message, type);
 		_trigger(notification);
 	}
 

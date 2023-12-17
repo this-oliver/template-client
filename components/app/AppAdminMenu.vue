@@ -7,23 +7,27 @@ const auth = useAuthStore();
 <template>
   <base-btn
     id="admin-menu"
-    color="primary">
+    color="primary"
+  >
     {{ auth.user ? auth.user.username : "Admin" }}
   </base-btn>
 
   <v-menu
     activator="#admin-menu"
     open-on-hover
-    color="primary">
+    color="primary"
+  >
     <v-list
       variant="flat"
-      elevation="0">
+      elevation="0"
+    >
       <v-list-item to="/profile">
         <v-list-item-title>Profile</v-list-item-title>
       </v-list-item>
       <v-list-item
         class="text-error"
-        @click="auth.logout()">
+        @click="auth.logout()"
+      >
         <v-list-item-title>Logout</v-list-item-title>
       </v-list-item>
     </v-list>
