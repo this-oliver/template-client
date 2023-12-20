@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useNavigationStore } from '~/stores/navigation';
-import { useSidebarStore } from '~/stores/sidebar';
+import { useNavigationStore } from '~/stores/app';
+import { useSidebarStore } from '~/stores/app';
 import { useAuthStore } from '~/stores/auth';
 import type { ActionItem } from '~/components/base/BaseCard.vue';
 

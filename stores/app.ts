@@ -3,7 +3,7 @@ import { useAuthStore } from '~/stores/auth';
 import { useNotification } from '~/composables/useNotification';
 import type { ActionItem } from '~/components/base/BaseCard.vue';
 
-export const useNavigationStore = defineStore('navigation', () => {
+const useNavigationStore = defineStore('navigation', () => {
 	const authStore = useAuthStore();
 	const { notify } = useNotification();
 
@@ -42,3 +42,15 @@ export const useNavigationStore = defineStore('navigation', () => {
 
 	return { options };
 });
+
+const useSidebarStore = defineStore('sidebar', {
+	state: () => ({ visible: false }),
+	actions: {
+		toggle() {
+			this.visible = !this.visible;
+		}
+	}
+});
+
+
+export { useNavigationStore, useSidebarStore };

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useSidebarStore } from '~/stores/sidebar';
+import { useSidebarStore } from '~/stores/app';
 import type { ActionItem } from '~/components/base/BaseCard.vue';
 
 useSeoSetup();
