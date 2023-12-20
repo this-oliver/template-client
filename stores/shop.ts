@@ -7,7 +7,10 @@ const useShopStore = defineStore('shop', () => {
 	const { post, get, patch, remove } = useRequest();
 	const authStore = useAuthStore();
 
-	const shops = ref<Shop[]>([]);
+	const shop = ref<Shop>();
+
+	const getShopName = computed(() => shop.value?.name ?? '');
+	const getShopDescription = computed(() => shop.value?.description ?? '');
 
 	async function createShop(shop: Shop): Promise<Shop> {
 		const { data } = await post('/shops', shop, { authorization: authStore.accessToken });
@@ -21,9 +24,14 @@ const useShopStore = defineStore('shop', () => {
 
 	async function indexShops(): Promise<Shop[]> {
 		const { data } = await get('/shops');
-		shops.value = data.value as Shop[];
+		
+		const fetchedShops = data.value as Shop[];
     
-		return shops.value;
+		if(fetchedShops.length > 0){
+			shop.value = (data.value as Shop[])[0];
+		}
+    
+		return fetchedShops;
 	}
 
 	async function updateShop(id:string, patchedShop: Partial<Shop>): Promise<Shop> {
@@ -37,7 +45,9 @@ const useShopStore = defineStore('shop', () => {
 	}
 
 	return {
-		shops,
+		shop,
+		getShopName,
+		getShopDescription,
 		createShop,
 		getShop,
 		indexShops,
