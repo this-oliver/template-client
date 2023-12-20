@@ -57,115 +57,120 @@ export const useAuthStore = defineStore('auth', () => {
 		refreshToken.value = refreshT;
 	}
 
-	type AuthResponse = { user: User, accessToken: string, refreshToken: string };
+  type Tokens = { accessToken: string, refreshToken: string };
+  type Credentials = Tokens & { user: User };
 
-	/**
+  /**
 	 * Register user. This function saves auth tokens and returns user if
 	 * if everything goes as planned.
 	 */
-	async function register(username: string, password: string): Promise<User> {
-		const { data } = await post('/auth/register', { username, password });
+  async function register(username: string, password: string): Promise<User> {
+  	const { data } = await post('/auth/register', { username, password });
 
-		const auth = data.value as AuthResponse;
+  	const auth = data.value as Credentials | undefined;
 		
-		if(!auth.user){
-			throw new Error('Invalid username or password.');
-		}
+  	if(!auth?.user){
+  		throw new Error('Invalid username or password.');
+  	}
 
-		_setTokens(auth.accessToken, auth.refreshToken);
+  	_setTokens(auth.accessToken, auth.refreshToken);
 		
-		return user.value as User;
-	}
+  	return user.value as User;
+  }
 	
-	/**
+  /**
 	 * Login user. This function saves auth tokens and returns user if credentials
 	 * are valid.
 	 */
-	async function login(username: string, password: string): Promise<User>{
-		const { data } = await post('/auth/login', { username, password });
+  async function login(username: string, password: string): Promise<User>{
+  	const { data } = await post('/auth/login', { username, password });
 		
-		const auth = data.value as AuthResponse;
+  	const auth = data.value as Credentials | undefined;
 		
-		if(!auth.user){
-			throw new Error('Invalid username or password.');
-		}
+  	if(!auth?.user){
+  		throw new Error('Invalid username or password.');
+  	}
 
-		_setUser(auth.user);
-		_setTokens(auth.accessToken, auth.refreshToken);
+  	_setUser(auth.user);
+  	_setTokens(auth.accessToken, auth.refreshToken);
 		
-		return user.value as User;
-	}
+  	return user.value as User;
+  }
 
-	/**
+  /**
 	 * Refreshes auth tokens.
 	 */
-	async function refresh(): Promise<void>{
-		if(!refreshToken.value){
-			throw new Error('Missing refresh token.');
-		}
+  async function refresh(): Promise<void>{
+  	if(!refreshToken.value){
+  		throw new Error('Missing refresh token.');
+  	}
 
-		const { data } = await post('/auth/refresh', { refreshToken: refreshToken.value, accessToken: accessToken.value });
+  	const { data } = await post('/auth/refresh', { refreshToken: refreshToken.value, accessToken: accessToken.value });
 
-		const tokens = data.value as {accessToken: string, refreshToken: string};
+  	const tokens = data.value as Tokens | undefined;
 
-		_setTokens(tokens.accessToken, tokens.refreshToken);
-	}
+  	if(!tokens){
+  		throw new Error('Failed to refresh tokens. Please login again.');
+  	}
 
-	/**
+  	_setTokens(tokens.accessToken, tokens.refreshToken);
+  }
+
+  /**
 	 * Updates user.
 	 */
-	async function updateUser (id: string, patchedUser: Partial<User>): Promise<User> {
-		const { data } = await patch(`/users/${id}`, patchedUser, { authorization: accessToken.value });
+  async function updateUser (id: string, patchedUser: Partial<User>): Promise<User> {
+  	const { data } = await patch(`/users/${id}`, patchedUser, { authorization: accessToken.value });
+    
+  	const updatedUser = data.value as User;
 
-		const updatedUser = data.value as User;
+  	if (!updatedUser) {
+  		throw new Error('Invalid user.');
+  	}
 
-		if (!updatedUser) {
-			throw new Error('Invalid user.');
-		}
+  	_setUser(updatedUser);
 
-		_setUser(updatedUser);
+  	return user.value as User;
+  }
 
-		return user.value as User;
-	}
-
-	/**
+  /**
 	 * Removes auth tokens.
 	 */
-	function logout(): void {
-		_setUser(undefined);
-		_setTokens(undefined, undefined);
-	}
+  function logout(): void {
+  	_setUser(undefined);
+  	_setTokens(undefined, undefined);
+  }
 
-	onMounted(() => {
-		const localUser = get(STORAGE_KEY_USER);
-		const localAccessToken = get(STORAGE_KEY_ACCESS);
-		const localRefreshToken = get(STORAGE_KEY_REFRESH);
+  onMounted(() => {
+  	const localUser = get(STORAGE_KEY_USER);
+  	const localAccessToken = get(STORAGE_KEY_ACCESS);
+  	const localRefreshToken = get(STORAGE_KEY_REFRESH);
 
-		function isNotEmptyString (value: string | null): boolean {
-			return value !== null && value !== undefined && value !== 'undefined';
-		}
+  	function isNotEmptyString (value: string | null): boolean {
+  		return value !== null && value !== undefined && value !== 'undefined';
+  	}
 
-		if (isNotEmptyString(localUser)) {
-			user.value = JSON.parse(localUser as string);
-		}
+  	if (isNotEmptyString(localUser)) {
+  		user.value = JSON.parse(localUser as string);
+  	}
 
-		if (isNotEmptyString(localAccessToken)) {
-			accessToken.value = localAccessToken as string;
-		}
+  	if (isNotEmptyString(localAccessToken)) {
+  		accessToken.value = localAccessToken as string;
+  	}
 
-		if (isNotEmptyString(localRefreshToken)) {
-			refreshToken.value = localRefreshToken as string;
-		}
-	});
+  	if (isNotEmptyString(localRefreshToken)) {
+  		refreshToken.value = localRefreshToken as string;
+  	}
+  });
 
-	return {
-		user,
-		accessToken,
-		isAuthenticated,
-		register,
-		login,
-		refresh,
-		updateUser,
-		logout
-	};
+  return {
+  	user,
+  	accessToken,
+  	isAuthenticated,
+  	register,
+  	login,
+  	refresh,
+  	updateUser,
+  	logout
+  };
 });

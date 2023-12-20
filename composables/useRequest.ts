@@ -10,6 +10,9 @@ export interface FetchError {
   message: string;
 }
 
+const DEFAULT_METHOD = 'GET';
+const DEFAULT_CONTENT_TYPE = 'application/json';
+
 /**
  * returns true if a string is a url with or without protocol
  */
@@ -24,57 +27,77 @@ function _isValidUrl (str: string): boolean {
 	return !!pattern.test(str);
 }
 
-export function useRequest () {
-	const DEFAULT_METHOD = 'GET';
-	const DEFAULT_CONTENT_TYPE = 'application/json';
+/**
+ * returns a valid url or appends base url if `url` value is an invalid http(s) protocol on it's own
+ */
+function _buildUrl (url: string, baseUrl: string): string {
+	return _isValidUrl(url) ? url : `${baseUrl}${url}`;
+}
 
-	const runtimeConfig = useRuntimeConfig();
-	const BASE_URL = runtimeConfig.public.baseUrl;
+/**
+ * returns a fetch config
+ */
+function _buildConfig(options?: FetchConfig): RequestInit {
+	const config: RequestInit = {
+		method: options?.method || DEFAULT_METHOD,
+		headers: { 'Content-Type': DEFAULT_CONTENT_TYPE }
+	};
 
-	// returns url if it is valid. otherwise returns url with prepended base url
-	function _buildUrl (url: string): string {
-		return _isValidUrl(url) ? url : `${BASE_URL}${url}`;
-	}
-
-	// returns a fetch config
-	function _buildConfig(options?: FetchConfig): RequestInit {
-		const config: RequestInit = {
-			method: options?.method || DEFAULT_METHOD,
-			headers: { 'Content-Type': DEFAULT_CONTENT_TYPE }
-		};
-
-		if(options?.contentType){
+	if(options?.contentType){
         config.headers!['Content-Type' as keyof HeadersInit] = options.contentType;
-		} else if (options?.contentType === undefined){
-			delete config.headers!['Content-Type' as keyof HeadersInit];
-		}
+	} else if (options?.contentType === undefined){
+		delete config.headers!['Content-Type' as keyof HeadersInit];
+	}
 
-		if (options?.body) {
-			config.body = options.body;
-		}
+	if (options?.body) {
+		config.body = options.body;
+	}
 
-		if (options?.authorization) {
+	if (options?.authorization) {
         config.headers!['Authorization' as keyof HeadersInit] = `Bearer ${options.authorization}`;
-		}
-
-		return config;
 	}
 
-	// returns a json string
-	function _buildBody(body: object | string): string {
-		if(typeof body === 'string'){
-			return body;
-		}
+	return config;
+}
 
-		return JSON.stringify(body);
+/**
+ * returns a stringyfied object
+ */
+function _buildBody(body: object | string): string {
+	if(typeof body === 'string'){
+		return body;
 	}
+
+	return JSON.stringify(body);
+}
+
+/**
+ * returns interceptor (a hook into the event lifecycle for requests, request errors, responses and response errors)
+ */
+function _buildInterceptor(){
+	return {
+		// Handle the request errors
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		onRequestError(context: any){
+			throw new Error(context.error.message);
+		},
+		// Handle the response errors
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		async onResponseError(context: any){
+			throw context._data;
+		}
+	};
+}
+
+export function useRequest () {
+	const BASE_URL = useRuntimeConfig().public.baseUrl;
 
 	// wrapper for fetch API with base url and default headers
 	async function request (url: string, options?: FetchConfig) {
 		try {
 			const config: RequestInit = _buildConfig(options);
 
-			const path = _buildUrl(url);
+			const path = _buildUrl(url, BASE_URL);
 
 			const response = await fetch(path, { ...config, ...options });
 
@@ -97,28 +120,34 @@ export function useRequest () {
 	}
 
 	async function post (url: string, body: object | string, options?: FetchConfig) {
-		url = _buildUrl(url);
+		url = _buildUrl(url, BASE_URL);
 
-		return useFetch(url, {
-			..._buildConfig(options),
-			body: _buildBody(body),
-			method: 'POST',
-		});
+		return useFetch(
+			url,
+			{
+				..._buildInterceptor(),
+				..._buildConfig(options),
+				method: 'POST',
+				body: _buildBody(body)
+			}
+		);
 	}
 
 	async function get (url: string, options?: FetchConfig) {
-		url = _buildUrl(url);
+		url = _buildUrl(url, BASE_URL);
 
 		return useFetch(url, {
+			..._buildInterceptor(),
 			..._buildConfig(options),
 			method: 'GET',
 		});
 	}
 
 	async function patch (url: string, body: object | string, options?: FetchConfig) {
-		url = _buildUrl(url);
+		url = _buildUrl(url, BASE_URL);
 
 		return useFetch(url, {
+			..._buildInterceptor(),
 			..._buildConfig(options),
 			body: _buildBody(body),
 			method: 'PATCH',
@@ -127,9 +156,10 @@ export function useRequest () {
 
 	// 'delete' is a reserved word
 	async function remove (url: string, options?: FetchConfig) {
-		url = _buildUrl(url);
+		url = _buildUrl(url, BASE_URL);
 
 		return useFetch(url, {
+			..._buildInterceptor(),
 			..._buildConfig(options),
 			method: 'DELETE',
 		});

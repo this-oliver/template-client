@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useAuthStore } from '~/stores/auth';
 
-const auth = useAuthStore();
+const authStore = useAuthStore();
 </script>
 
 <template>
@@ -9,7 +9,7 @@ const auth = useAuthStore();
     id="admin-menu"
     color="primary"
   >
-    {{ auth.user ? auth.user.username : "Admin" }}
+    {{ authStore.user ? authStore.user.username : "Admin" }}
   </base-btn>
 
   <v-menu
@@ -26,7 +26,7 @@ const auth = useAuthStore();
       </v-list-item>
       <v-list-item
         class="text-error"
-        @click="auth.logout()"
+        @click="authStore.logout()"
       >
         <v-list-item-title>Logout</v-list-item-title>
       </v-list-item>
