@@ -22,6 +22,6 @@
     <app-footer />
 
     <!-- notification -->
-    <toaster />
+    <Toaster />
   </v-app>
 </template>
